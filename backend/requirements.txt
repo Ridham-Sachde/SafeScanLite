@@ -1,0 +1,7 @@
+flask
+flask-cors
+pillow
+pyzbar
+opencv-python-headless
+numpy
+werkzeug

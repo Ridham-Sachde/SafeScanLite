@@ -1,13 +1,14 @@
 import os
+import cv2
+import numpy as np
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from PIL import Image
-from pyzbar.pyzbar import decode
 from urllib.parse import urlparse
 
 app = Flask(__name__)
-CORS(app)  # Enable Cross-Origin requests for React
+CORS(app)  # Enable Cross-Origin requests
 
 # Configuration
 UPLOAD_FOLDER = 'uploads'
@@ -29,25 +30,26 @@ def analyze_threat_level(url):
     score = 0
     warnings = []
     
+    url = str(url).strip()
     parsed_url = urlparse(url)
     domain = parsed_url.netloc.lower()
     
-    # 1. Protocol Check (Red Flag)
+    # 1. Protocol Check
     if parsed_url.scheme != 'https':
         score += 5
         warnings.append("Insecure Protocol: URL uses HTTP instead of HTTPS.")
 
-    # 2. Risky TLDs (Orange Flag)
+    # 2. Risky TLDs
     risky_tlds = ['.xyz', '.top', '.gq', '.zip']
     if any(domain.endswith(tld) for tld in risky_tlds):
         score += 3
         warnings.append(f"Suspicious Domain: Ends in a high-risk TLD ({domain.split('.')[-1]}).")
 
-    # 3. Phishing Keywords (Yellow Flag)
+    # 3. Phishing Keywords
     phishing_keywords = ['login', 'secure', 'verify', 'update', 'account']
     if any(keyword in url.lower() for keyword in phishing_keywords):
         score += 2
-        warnings.append("Phishing Risk: URL contains sensitive keywords (login/verify).")
+        warnings.append("Phishing Risk: URL contains sensitive keywords.")
 
     # Determine Traffic Light Status
     if score >= 5:
@@ -57,13 +59,43 @@ def analyze_threat_level(url):
     else:
         return {"status": "SAFE", "color": "#52c41a", "warnings": ["No immediate threats detected."]}
 
+def decode_qr_opencv(image_path):
+    """Fallback scanner using OpenCV if pyzbar fails"""
+    try:
+        img = cv2.imread(image_path)
+        detector = cv2.QRCodeDetector()
+        data, bbox, _ = detector.detectAndDecode(img)
+        return data if data else None
+    except Exception as e:
+        print(f"OpenCV Error: {e}")
+        return None
+
+@app.route('/analyze', methods=['POST'])
+def analyze_url():
+    """Endpoint for Camera Scan (receives raw text)"""
+    data = request.get_json()
+    if not data or 'url' not in data:
+        return jsonify({'error': 'No URL provided'}), 400
+    
+    url = data['url']
+    try:
+        risk_report = analyze_threat_level(url)
+        return jsonify({
+            'url': url,
+            'status': risk_report['status'],
+            'color': risk_report['color'],
+            'warnings': risk_report['warnings']
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/scan', methods=['POST'])
 def scan_qr():
+    """Endpoint for File Upload (receives image file)"""
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
     
     file = request.files['file']
-    
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
@@ -72,36 +104,45 @@ def scan_qr():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
 
+        qr_data = None
+        
+        # 1. Try Pyzbar (Primary)
         try:
-            # Open image and decode QR
+            from pyzbar.pyzbar import decode
             image = Image.open(filepath)
             decoded_objects = decode(image)
+            if decoded_objects:
+                qr_data = decoded_objects[0].data.decode('utf-8')
+        except ImportError:
+            print("Pyzbar not installed, skipping to OpenCV...")
+        except Exception as e:
+            print(f"Pyzbar failed: {e}")
 
-            if not decoded_objects:
-                # Cleanup and error
-                os.remove(filepath)
-                return jsonify({'error': 'No QR code found in the image.'}), 400
+        # 2. Try OpenCV (Fallback)
+        if not qr_data:
+            print("Trying OpenCV fallback...")
+            qr_data = decode_qr_opencv(filepath)
 
-            # Extract data (assume first QR code is the target)
-            qr_data = decoded_objects[0].data.decode('utf-8')
-            
-            # Analyze Risk
-            risk_report = analyze_threat_level(qr_data)
-            
-            # Cleanup
+        # Cleanup file
+        if os.path.exists(filepath):
             os.remove(filepath)
 
-            return jsonify({
-                'url': qr_data,
-                'status': risk_report['status'],
-                'color': risk_report['color'],
-                'warnings': risk_report['warnings']
-            })
+        if not qr_data:
+            return jsonify({'error': 'Could not read QR code. Try a clearer image.'}), 400
 
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
-            
-    return jsonify({'error': 'Invalid file type. Allowed: png, jpg, jpeg, gif'}), 400
+        risk_report = analyze_threat_level(qr_data)
+        return jsonify({
+            'url': qr_data,
+            'status': risk_report['status'],
+            'color': risk_report['color'],
+            'warnings': risk_report['warnings']
+        })
+
+    return jsonify({'error': 'Invalid file type'}), 400
+
+# if __name__ == '__main__':
+#     app.run(debug=True, port=5000, host='0.0.0.0') # host='0.0.0.0' allows network access
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # ssl_context='adhoc' generates a temporary secure certificate
+    app.run(debug=True, port=5000, host='0.0.0.0', ssl_context='adhoc')

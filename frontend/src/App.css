@@ -1,9 +1,7 @@
 :root {
   --bg-color: #0d1117;
   --card-bg: #161b22;
-  --primary: #2f81f7;       /* Tech Blue */
-  --accent-safe: #238636;   /* Cyber Green */
-  --accent-danger: #da3633; /* Alert Red */
+  --primary: #2f81f7;
   --text-main: #e6edf3;
   --text-muted: #8b949e;
   --font-mono: 'Courier New', Courier, monospace;
@@ -23,13 +21,13 @@ body {
 
 .app-container {
   width: 100%;
-  max-width: 500px;
-  padding: 20px;
+  max-width: 480px;
+  padding: 15px;
 }
 
 .card {
   background: var(--card-bg);
-  padding: 2.5rem;
+  padding: 2rem;
   border-radius: 16px;
   border: 1px solid #30363d;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
@@ -38,41 +36,56 @@ body {
   overflow: hidden;
 }
 
-/* Header Styling */
 h1 {
   margin-top: 0;
-  color: var(--text-main);
   letter-spacing: 1px;
   text-transform: uppercase;
-  font-size: 1.8rem;
 }
 
-.subtitle {
+/* --- TABS --- */
+.tab-container {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 25px;
+  background: #0d1117;
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid #30363d;
+}
+
+.tab-btn {
+  flex: 1;
+  background: transparent;
   color: var(--text-muted);
-  margin-bottom: 2rem;
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
-/* File Upload - Dashed Grid Look */
+.tab-btn.active {
+  background: #21262d;
+  color: var(--primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* --- FILE INPUT --- */
 input[type="file"] {
   display: block;
   width: 100%;
   border: 2px dashed #30363d;
-  padding: 30px 20px;
+  padding: 25px 15px;
   border-radius: 12px;
   cursor: pointer;
   background-color: #0d1117;
   color: var(--text-muted);
-  font-family: var(--font-mono);
-  transition: all 0.3s ease;
   box-sizing: border-box;
 }
 
 input[type="file"]:hover {
   border-color: var(--primary);
-  background-color: #1c2128;
-  box-shadow: 0 0 15px rgba(47, 129, 247, 0.1);
 }
 
 input[type="file"]::file-selector-button {
@@ -81,21 +94,27 @@ input[type="file"]::file-selector-button {
   border: 1px solid #30363d;
   padding: 8px 16px;
   border-radius: 6px;
-  cursor: pointer;
   margin-right: 15px;
-  font-family: var(--font-mono);
-  transition: all 0.2s;
 }
 
-input[type="file"]::file-selector-button:hover {
-  background-color: var(--primary);
-  color: white;
-  border-color: var(--primary);
+/* --- CAMERA --- */
+.scanner-wrapper {
+  border: 2px solid #30363d;
+  border-radius: 12px;
+  padding: 4px;
+  background: #000;
+  overflow: hidden;
 }
 
-/* The Action Button */
+.camera-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* --- ACTION BUTTON --- */
 .scan-btn {
-  background: linear-gradient(90deg, var(--primary), #1a66d6);
+  background: var(--primary);
   color: white;
   border: none;
   padding: 14px;
@@ -104,60 +123,35 @@ input[type="file"]::file-selector-button:hover {
   font-weight: 600;
   cursor: pointer;
   width: 100%;
-  margin-top: 15px;
-  letter-spacing: 0.5px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: 20px;
 }
 
 .scan-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(47, 129, 247, 0.4);
+  opacity: 0.9;
 }
 
 .scan-btn:disabled {
   background: #21262d;
   color: #484f58;
-  cursor: wait;
 }
 
-/* Error Message */
-.error-msg {
-  color: #ff7b72;
-  background: rgba(218, 54, 51, 0.1);
-  padding: 12px;
-  border-radius: 6px;
-  margin-top: 20px;
-  border: 1px solid rgba(218, 54, 51, 0.3);
-  font-family: var(--font-mono);
-  font-size: 0.9rem;
-}
-
-/* Result Section */
+/* --- RESULTS --- */
 .result-section {
-  margin-top: 30px;
+  margin-top: 25px;
   border-top: 1px solid #30363d;
   padding-top: 20px;
   text-align: left;
-  animation: slideDown 0.4s ease-out;
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 .status-badge {
   display: block;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 10px;
+  border-radius: 6px;
   color: white;
   font-weight: bold;
-  font-size: 1rem;
-  margin-bottom: 20px;
   text-align: center;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  margin-bottom: 15px;
 }
 
 .url-box {
@@ -165,30 +159,27 @@ input[type="file"]::file-selector-button:hover {
   padding: 15px;
   border-radius: 8px;
   border-left: 4px solid var(--primary);
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   word-break: break-all;
-  font-family: var(--font-mono);
   color: var(--text-main);
-}
-
-.warnings-box h4 {
-  color: var(--text-muted);
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
 }
 
 .warnings-box ul {
   padding-left: 20px;
   color: var(--text-main);
+  font-size: 0.9rem;
 }
 
-.warnings-box li {
-  margin-bottom: 8px;
+.error-msg {
+  color: #ff7b72;
+  background: rgba(255, 123, 114, 0.1);
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 15px;
+  font-size: 0.9rem;
 }
 
-/* SCANNING ANIMATION EFFECT */
+/* --- ANIMATION --- */
 .scan-line {
   position: absolute;
   top: 0;
@@ -197,9 +188,9 @@ input[type="file"]::file-selector-button:hover {
   height: 4px;
   background: var(--primary);
   box-shadow: 0 0 10px var(--primary);
-  animation: scan 1.5s infinite linear;
   display: none;
   z-index: 10;
+  animation: scan 1.5s infinite linear;
 }
 
 .scanning .scan-line {
