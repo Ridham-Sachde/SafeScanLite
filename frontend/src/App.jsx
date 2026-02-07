@@ -224,11 +224,11 @@ function App() {
               <h3>Team: <span className="highlight">Logically Prompted</span></h3>
               <div className="member-card">
                 <span className="role">Member 1</span>
-                <p>25BCExxx abc</p>
+                <p>25BCE523 Radha Popat</p>
               </div>
               <div className="member-card">
                 <span className="role">Member 2</span>
-                <p>25BCEyyy xyz</p>
+                <p>25BCE526 Ridham Sachde</p>
               </div>
             </div>
           </div>
