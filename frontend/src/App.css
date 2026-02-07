@@ -1,39 +1,84 @@
+/* --- THEME VARIABLES --- */
 :root {
+  /* Default Dark Mode */
   --bg-color: #0d1117;
+  --bg-gradient: radial-gradient(circle at 50% 50%, #1f242e 0%, #0d1117 100%);
   --card-bg: #161b22;
   --primary: #2f81f7;
   --text-main: #e6edf3;
   --text-muted: #8b949e;
-  --font-mono: 'Courier New', Courier, monospace;
+  --border-color: #30363d;
+  --input-bg: #0d1117;
+  --hover-bg: #21262d;
+  --shadow-color: rgba(0, 0, 0, 0.5);
 }
 
+[data-theme='light'] {
+  --bg-color: #f6f8fa;
+  --bg-gradient: radial-gradient(circle at 50% 50%, #ffffff 0%, #f0f2f5 100%);
+  --card-bg: #ffffff;
+  --primary: #0969da;
+  --text-main: #24292f;
+  --text-muted: #57606a;
+  --border-color: #d0d7de;
+  --input-bg: #f6f8fa;
+  --hover-bg: #eaeef2;
+  --shadow-color: rgba(140, 149, 159, 0.2);
+}
+
+/* --- GLOBAL STYLES --- */
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
   background-color: var(--bg-color);
-  background-image: radial-gradient(circle at 50% 50%, #1f242e 0%, #0d1117 100%);
+  background-image: var(--bg-gradient);
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   color: var(--text-main);
+  transition: background 0.5s ease, color 0.5s ease;
+  overflow-x: hidden;
+}
+
+/* Background Animation */
+body::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(47, 129, 247, 0.1) 0%, transparent 60%);
+  animation: rotateBG 20s linear infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes rotateBG {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .app-container {
   width: 100%;
   max-width: 480px;
   padding: 15px;
+  position: relative;
+  z-index: 1;
 }
 
+/* --- CARD & LAYOUT --- */
 .card {
   background: var(--card-bg);
   padding: 2rem;
   border-radius: 16px;
-  border: 1px solid #30363d;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 10px 40px var(--shadow-color);
   text-align: center;
   position: relative;
   overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 h1 {
@@ -42,15 +87,44 @@ h1 {
   text-transform: uppercase;
 }
 
+/* --- HEADER CONTROLS --- */
+.header-controls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.icon-btn {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 0 10px var(--primary);
+  border-color: var(--primary);
+}
+
 /* --- TABS --- */
 .tab-container {
   display: flex;
   gap: 8px;
   margin-bottom: 25px;
-  background: #0d1117;
-  padding: 4px;
-  border-radius: 10px;
-  border: 1px solid #30363d;
+  background: var(--input-bg);
+  padding: 5px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
 }
 
 .tab-btn {
@@ -58,7 +132,7 @@ h1 {
   background: transparent;
   color: var(--text-muted);
   border: none;
-  padding: 10px;
+  padding: 12px;
   cursor: pointer;
   border-radius: 8px;
   font-weight: 600;
@@ -66,44 +140,49 @@ h1 {
 }
 
 .tab-btn.active {
-  background: #21262d;
+  background: var(--hover-bg);
   color: var(--primary);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  transform: translateY(-1px);
 }
 
 /* --- FILE INPUT --- */
+.file-input-wrapper {
+  position: relative;
+  margin-bottom: 20px;
+}
+
 input[type="file"] {
+  display: none; /* Hide default input */
+}
+
+.file-label {
   display: block;
   width: 100%;
-  border: 2px dashed #30363d;
-  padding: 25px 15px;
+  border: 2px dashed var(--border-color);
+  padding: 30px 15px;
   border-radius: 12px;
   cursor: pointer;
-  background-color: #0d1117;
+  background-color: var(--input-bg);
   color: var(--text-muted);
-  box-sizing: border-box;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
-input[type="file"]:hover {
+.file-label:hover {
   border-color: var(--primary);
-}
-
-input[type="file"]::file-selector-button {
-  background-color: #21262d;
   color: var(--primary);
-  border: 1px solid #30363d;
-  padding: 8px 16px;
-  border-radius: 6px;
-  margin-right: 15px;
+  background-color: var(--hover-bg);
 }
 
 /* --- CAMERA --- */
 .scanner-wrapper {
-  border: 2px solid #30363d;
+  border: 2px solid var(--border-color);
   border-radius: 12px;
   padding: 4px;
   background: #000;
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
 .camera-hint {
@@ -114,54 +193,64 @@ input[type="file"]::file-selector-button {
 
 /* --- ACTION BUTTON --- */
 .scan-btn {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary), #1a60c2);
   color: white;
   border: none;
-  padding: 14px;
-  border-radius: 8px;
+  padding: 15px;
+  border-radius: 10px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   width: 100%;
-  margin-top: 20px;
+  letter-spacing: 0.5px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .scan-btn:hover:not(:disabled) {
-  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(47, 129, 247, 0.4);
+}
+
+.scan-btn:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .scan-btn:disabled {
-  background: #21262d;
-  color: #484f58;
+  background: var(--hover-bg);
+  color: var(--text-muted);
+  cursor: not-allowed;
 }
 
 /* --- RESULTS --- */
 .result-section {
   margin-top: 25px;
-  border-top: 1px solid #30363d;
+  border-top: 1px solid var(--border-color);
   padding-top: 20px;
   text-align: left;
 }
 
 .status-badge {
   display: block;
-  padding: 10px;
-  border-radius: 6px;
+  padding: 12px;
+  border-radius: 8px;
   color: white;
   font-weight: bold;
   text-align: center;
   text-transform: uppercase;
   margin-bottom: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  animation: bounceIn 0.5s ease;
 }
 
 .url-box {
-  background: #0d1117;
+  background: var(--input-bg);
   padding: 15px;
   border-radius: 8px;
   border-left: 4px solid var(--primary);
   margin-bottom: 15px;
   word-break: break-all;
   color: var(--text-main);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
 }
 
 .warnings-box ul {
@@ -173,13 +262,151 @@ input[type="file"]::file-selector-button {
 .error-msg {
   color: #ff7b72;
   background: rgba(255, 123, 114, 0.1);
-  padding: 10px;
-  border-radius: 6px;
+  padding: 12px;
+  border-radius: 8px;
   margin-top: 15px;
   font-size: 0.9rem;
+  border: 1px solid rgba(255, 123, 114, 0.2);
 }
 
-/* --- ANIMATION --- */
+/* --- MODAL (ABOUT US) --- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid var(--primary);
+  width: 100%;
+  max-width: 350px;
+  position: relative;
+  text-align: center;
+  color: var(--text-main);
+  box-shadow: 0 0 30px var(--primary);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.team-info h3 {
+  margin-bottom: 20px;
+  font-size: 1.2rem;
+}
+
+.highlight {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+
+.member-card {
+  background: var(--input-bg);
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.member-card .role {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.member-card p {
+  margin: 5px 0 0;
+  font-weight: 600;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes scan {
+  0% { top: 0%; opacity: 0.5; }
+  50% { opacity: 1; box-shadow: 0 0 20px var(--primary); }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes wobble {
+  0% { transform: translateX(0%); }
+  15% { transform: translateX(-5%) rotate(-5deg); }
+  30% { transform: translateX(4%) rotate(3deg); }
+  45% { transform: translateX(-3%) rotate(-3deg); }
+  60% { transform: translateX(2%) rotate(2deg); }
+  75% { transform: translateX(-1%) rotate(-1deg); }
+  100% { transform: translateX(0%); }
+}
+
+/* Utility Classes for Animation */
+.fade-in { animation: fadeIn 0.4s ease-out; }
+.slide-down { animation: slideDown 0.5s ease-out; }
+.slide-up { animation: slideUp 0.5s ease-out; }
+.pop-in { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.wobble { animation: wobble 0.5s ease-in-out; }
+
+.list-item-animate {
+  opacity: 0;
+  animation: slideUp 0.3s forwards;
+}
+
+.pulse-on-hover:hover {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* Laser Scan Line */
 .scan-line {
   position: absolute;
   top: 0;
@@ -187,19 +414,39 @@ input[type="file"]::file-selector-button {
   width: 100%;
   height: 4px;
   background: var(--primary);
-  box-shadow: 0 0 10px var(--primary);
+  box-shadow: 0 0 15px var(--primary);
   display: none;
   z-index: 10;
-  animation: scan 1.5s infinite linear;
+  animation: scan 2s infinite linear;
 }
 
 .scanning .scan-line {
   display: block;
 }
 
-@keyframes scan {
-  0% { top: 0%; opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { top: 100%; opacity: 0; }
+/* --- RESPONSIVENESS --- */
+@media (max-width: 600px) {
+  .card {
+    padding: 1.5rem;
+    margin: 10px;
+    border-radius: 20px; /* Softer corners on mobile */
+  }
+
+  .header-controls {
+    justify-content: space-between; /* Spread out on mobile */
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  .tab-btn {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  .scan-btn {
+    font-size: 0.9rem;
+    padding: 12px;
+  }
 }
