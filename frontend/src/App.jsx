@@ -6,7 +6,7 @@ import './App.css';
 // ----------------------------------------------------------------------
 // 🔧 CONFIGURATION
 // ----------------------------------------------------------------------
-const API_BASE = 'http://127.0.0.1:5000'; 
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://127.0.0.1:5000';
 // NOTE: For mobile testing, use your local IP (e.g., 'http://192.168.1.5:5000') 
 // and ensure you are on the same network. HTTPS is required for camera on mobile web.
 
