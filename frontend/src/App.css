@@ -1,156 +1,214 @@
 :root {
-  --bg-color: #f0f2f5;
-  --card-bg: #ffffff;
-  --primary: #1890ff;
-  --text-main: #333;
+  --bg-color: #0d1117;
+  --card-bg: #161b22;
+  --primary: #2f81f7;       /* Tech Blue */
+  --accent-safe: #238636;   /* Cyber Green */
+  --accent-danger: #da3633; /* Alert Red */
+  --text-main: #e6edf3;
+  --text-muted: #8b949e;
+  --font-mono: 'Courier New', Courier, monospace;
 }
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   background-color: var(--bg-color);
+  background-image: radial-gradient(circle at 50% 50%, #1f242e 0%, #0d1117 100%);
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  color: var(--text-main);
 }
 
 .app-container {
   width: 100%;
-  max-width: 480px;
+  max-width: 500px;
   padding: 20px;
 }
 
 .card {
   background: var(--card-bg);
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  border-radius: 16px;
+  border: 1px solid #30363d;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
   text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
+/* Header Styling */
 h1 {
   margin-top: 0;
   color: var(--text-main);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 1.8rem;
 }
 
 .subtitle {
-  color: #666;
+  color: var(--text-muted);
   margin-bottom: 2rem;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
 }
 
-.upload-section {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
+/* File Upload - Dashed Grid Look */
 input[type="file"] {
   display: block;
   width: 100%;
-  border: 2px dashed #ccc;
-  padding: 20px;
-  border-radius: 8px;
+  border: 2px dashed #30363d;
+  padding: 30px 20px;
+  border-radius: 12px;
   cursor: pointer;
-  background-color: #fafafa;
-  font-size: 0.95rem;
-  transition: border-color 0.2s;
+  background-color: #0d1117;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  transition: all 0.3s ease;
   box-sizing: border-box;
 }
 
 input[type="file"]:hover {
   border-color: var(--primary);
+  background-color: #1c2128;
+  box-shadow: 0 0 15px rgba(47, 129, 247, 0.1);
 }
 
 input[type="file"]::file-selector-button {
-  background-color: var(--primary);
-  color: white;
-  border: none;
+  background-color: #21262d;
+  color: var(--primary);
+  border: 1px solid #30363d;
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: 500;
-  margin-right: 10px;
-  transition: background 0.2s;
+  margin-right: 15px;
+  font-family: var(--font-mono);
+  transition: all 0.2s;
 }
 
 input[type="file"]::file-selector-button:hover {
-  background-color: #0077e6;
-}
-
-.scan-btn {
   background-color: var(--primary);
   color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s;
+  border-color: var(--primary);
 }
 
-.scan-btn:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+/* The Action Button */
+.scan-btn {
+  background: linear-gradient(90deg, var(--primary), #1a66d6);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 15px;
+  letter-spacing: 0.5px;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .scan-btn:hover:not(:disabled) {
-  background-color: #0077e6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(47, 129, 247, 0.4);
 }
 
+.scan-btn:disabled {
+  background: #21262d;
+  color: #484f58;
+  cursor: wait;
+}
+
+/* Error Message */
 .error-msg {
-  color: #ff4d4f;
-  background: #fff1f0;
-  padding: 10px;
+  color: #ff7b72;
+  background: rgba(218, 54, 51, 0.1);
+  padding: 12px;
   border-radius: 6px;
-  margin-bottom: 15px;
-  border: 1px solid #ffa39e;
+  margin-top: 20px;
+  border: 1px solid rgba(218, 54, 51, 0.3);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
 }
 
-/* Result Section Styles */
+/* Result Section */
 .result-section {
-  margin-top: 20px;
-  border-top: 1px solid #eee;
+  margin-top: 30px;
+  border-top: 1px solid #30363d;
   padding-top: 20px;
   text-align: left;
+  animation: slideDown 0.4s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .status-badge {
-  display: inline-block;
-  padding: 8px 16px;
-  border-radius: 20px;
+  display: block;
+  padding: 12px;
+  border-radius: 8px;
   color: white;
   font-weight: bold;
-  font-size: 0.9rem;
-  margin-bottom: 15px;
-  width: 100%;
+  font-size: 1rem;
+  margin-bottom: 20px;
   text-align: center;
-  box-sizing: border-box;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 .url-box {
-  background: #f9f9f9;
-  padding: 10px;
-  border-radius: 6px;
-  margin-bottom: 15px;
+  background: #0d1117;
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid var(--primary);
+  margin-bottom: 20px;
   word-break: break-all;
-  font-size: 0.9rem;
-  border: 1px solid #eee;
+  font-family: var(--font-mono);
+  color: var(--text-main);
 }
 
 .warnings-box h4 {
-  margin: 0 0 10px 0;
-  color: #555;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
 }
 
 .warnings-box ul {
   padding-left: 20px;
-  color: #666;
-  font-size: 0.9rem;
+  color: var(--text-main);
 }
 
 .warnings-box li {
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+}
+
+/* SCANNING ANIMATION EFFECT */
+.scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary);
+  animation: scan 1.5s infinite linear;
+  display: none;
+  z-index: 10;
+}
+
+.scanning .scan-line {
+  display: block;
+}
+
+@keyframes scan {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
 }

@@ -45,26 +45,31 @@ function App() {
 
   return (
     <div className="app-container">
-      <div className="card">
-        <h1>🛡️ Safe-Scan Lite</h1>
-        <p className="subtitle">Upload a QR code to detect security risks</p>
+      {/* Add the 'scanning' class when loading is true */}
+    <div className={`card ${loading ? 'scanning' : ''}`}>
+      
+      {/* The Laser Scan Line */}
+      <div className="scan-line"></div> 
 
-        <div className="upload-section">
-          <input 
-            type="file" 
-            accept=".png, .jpg, .jpeg, .gif" 
-            onChange={handleFileChange} 
-          />
-          <button 
-            onClick={handleScan} 
-            disabled={loading || !file}
-            className="scan-btn"
-          >
-            {loading ? 'Analyzing...' : 'Scan QR Code'}
-          </button>
-        </div>
+      <h1>🛡️ Safe-Scan <span style={{color: 'var(--primary)'}}>Lite</span></h1>
+      <p className="subtitle">System Ready // Upload QR Target</p>
 
-        {error && <div className="error-msg">{error}</div>}
+      <div className="upload-section">
+        <input 
+          type="file" 
+          accept=".png, .jpg, .jpeg, .gif" 
+          onChange={handleFileChange} 
+        />
+        <button 
+          onClick={handleScan} 
+          disabled={loading || !file}
+          className="scan-btn"
+        >
+          {loading ? 'INITIALIZING SCAN...' : 'EXECUTE SCAN'}
+        </button>
+      </div>
+
+      {error && <div className="error-msg">⚠️ {error}</div>}
 
         {report && (
           <div className="result-section">
